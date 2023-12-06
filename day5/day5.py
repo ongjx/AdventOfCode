@@ -1,97 +1,4 @@
 #part1
-
-# destination, source, range
-
-# config = {
-#     'seed_to_soil': {
-#       98: {
-#         'destination': 50,
-#         'range': 2
-#       },
-#       50: {
-#         'destination': 52,
-#         'range': 48
-#       }
-#     },
-#     'soil_to_fertilizer': {
-#       15: {
-#         'destination': 0,
-#         'range': 37
-#       },
-#       52: {
-#         'destination': 37,
-#         'range': 2
-#       },
-#       0: {
-#         'destination': 39,
-#         'range': 15
-#       }
-#     },
-#     'fertilizer_to_water': {
-#       53: {
-#         'destination': 49,
-#         'range': 8
-#       },
-#       11: {
-#         'destination': 0,
-#         'range': 42
-#       },
-#       0: {
-#         'destination': 42,
-#         'range': 7
-#       },
-#       7: {
-#         'destination': 57,
-#         'range': 4
-#       }
-#     },
-#     'water_to_light': {
-#       18: {
-#         'destination': 88,
-#         'range': 7
-#       },
-#       25: {
-#         'destination': 18,
-#         'range': 70
-#       },
-#     },
-#     'light_to_temp': {
-#       77: {
-#         'destination': 45,
-#         'range': 23
-#       },
-#       45: {
-#         'destination': 81,
-#         'range': 19
-#       },
-#       64: {
-#         'destination': 68,
-#         'range': 13
-#       }
-#     },
-#     'temp_to_humidity': {
-#       69: {
-#         'destination': 0,
-#         'range': 1
-#       },
-#       0: {
-#         'destination': 1,
-#         'range': 69
-#       },
-#     },
-#     'humidity_to_location': {
-#       56: {
-#         'destination': 60,
-#         'range': 37
-#       },
-#       93: {
-#         'destination': 56,
-#         'range': 4
-#       },
-#     }
-# }
-
-# seeds = [79,14,55,13]
 l = ['seed_to_soil', 'soil_to_fertilizer', 'fertilizer_to_water', 'water_to_light', 'light_to_temp', 'temp_to_humidity', 'humidity_to_location']
 
 config = {}
@@ -136,3 +43,40 @@ for seed in seeds:
       next_to_find = next_to_find
   locs.append(next_to_find)
 print(min(locs))
+
+#part 2
+
+new = {}
+seeds = []
+with open('day5.txt') as f:
+  data = f.readlines()
+  data = [x.strip() for x in data if x.strip() != '']
+  x = [int(i) for i in data[0].split(': ')[1].split(' ')]
+
+  for i in range(0,len(x), 2):
+    seeds.append((x[i], x[i]+ x[i+1]))
+
+for i in l:
+  new = []
+  while len(seeds) > 0:
+    start, end = seeds.pop()
+    for k,v in config[i].items():
+      s = k
+      d = v['destination']
+      r = v['range']
+
+      intervalStart = max(start, s)
+      intervalEnd = min(end, s+r)
+
+      if intervalStart < intervalEnd:
+        print(intervalStart, intervalEnd)
+        new.append((intervalStart - s + d, intervalEnd - s + d))
+        if intervalStart > start:
+          seeds.append((start, intervalStart))
+        if end > intervalEnd:
+          seeds.append((intervalEnd, end))
+        break
+    else:
+      new.append((start, end))
+  seeds = new
+print(min(seeds)[0])
