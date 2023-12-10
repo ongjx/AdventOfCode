@@ -56,3 +56,21 @@ with open('day9.txt') as f:
       total = last - total
     all += total
   print(all)
+
+
+
+
+def recurse(data):
+  if (set(data) == {0}):
+    return 0
+  else:
+    diff = [data[i] - data[i-1] for i in range(1, len(data))]
+    return data[-1] + recurse(diff)
+
+with open('day9.txt') as f:
+  lines = f.readlines()
+  total = 0
+  for line in lines:
+    data = [int(i) for i in line.split(' ')][::-1]
+    total += recurse(data)
+  print(total)
